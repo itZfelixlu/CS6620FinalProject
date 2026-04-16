@@ -81,7 +81,7 @@ flowchart LR
 
   U --> FE
   FE -->|POST /upload| APIGW
-  FE -->|GET /results and GET/DELETE /results/{id}| APIGW
+  FE -->|GET /results and GET or DELETE result by id| APIGW
   APIGW --> UL
   UL -->|Presigned URL| FE
   FE -->|PUT file| S3
