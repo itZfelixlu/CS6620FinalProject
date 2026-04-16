@@ -1,0 +1,36 @@
+Data Analyst Internship Opportunity
+
+Organization: Insight Metrics Lab
+Location: Boston, MA (Hybrid)
+Duration: Summer Internship
+
+About the Role
+Insight Metrics Lab is seeking a data analyst intern to work on analytics dashboards and reporting automation.
+The role focuses on data quality checks, exploratory analysis, and communicating findings to stakeholders.
+
+Key Responsibilities
+- Clean and transform raw datasets for reporting.
+- Build SQL queries for recurring business questions.
+- Create visual dashboards and summary reports.
+- Identify trends, anomalies, and potential risks in data.
+- Collaborate with product and engineering teams on metric definitions.
+
+Required Qualifications
+- Strong SQL and spreadsheet skills.
+- Basic Python for data manipulation.
+- Familiarity with data visualization concepts.
+- Clear written communication and presentation skills.
+
+Preferred Qualifications
+- Experience with business intelligence tools.
+- Exposure to cloud data platforms and ETL workflows.
+- Interest in product analytics and experimentation.
+
+Success Criteria
+At the end of the internship, the candidate should deliver:
+1. A reusable reporting workflow.
+2. A dashboard tracking key operational metrics.
+3. A written summary of trends and recommendations.
+
+Working Style
+The team values curiosity, fast iteration, and evidence-based decision making.

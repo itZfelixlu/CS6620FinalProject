@@ -1,0 +1,36 @@
+Cloud Engineering Internship Role Summary
+
+Company: Example Cloud Systems
+Location: Remote
+Duration: 12 weeks
+
+Role Overview
+We are looking for a cloud engineering intern to support our document intelligence platform.
+The intern will help improve serverless workflows and optimize retrieval performance for user-facing APIs.
+
+Responsibilities
+- Build and maintain AWS Lambda functions for data processing.
+- Integrate Amazon SQS queues to support asynchronous pipeline stages.
+- Store structured outputs in Amazon DynamoDB.
+- Expose API endpoints with Amazon API Gateway.
+- Improve repeated-read performance using a cache-aside strategy.
+- Add monitoring with CloudWatch logs and basic metrics.
+
+Required Skills
+- Python programming and debugging.
+- Familiarity with AWS services: Lambda, S3, SQS, DynamoDB, API Gateway.
+- Understanding of REST APIs and JSON payloads.
+- Basic knowledge of caching and TTL concepts.
+
+Preferred Skills
+- Experience with lightweight frontend development using HTML, CSS, and JavaScript.
+- Ability to explain system design trade-offs clearly.
+
+Project Deliverables
+1. Upload endpoint that generates a presigned S3 URL.
+2. Processing pipeline that extracts and analyzes document content.
+3. Query API with list and detail endpoints.
+4. Cache-enabled detail retrieval showing miss-then-hit behavior.
+
+Expected Outcome
+Users should be able to upload a document, view generated summaries and tags, and repeatedly fetch results faster after caching.

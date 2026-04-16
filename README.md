@@ -56,3 +56,64 @@ command.
  * `cdk docs`        open CDK documentation
 
 Enjoy!
+
+## Architecture Diagram
+
+```mermaid
+flowchart LR
+  %% ===== Clients =====
+  U[User]
+  FE[Frontend Web App\n(S3 Static Website)]
+  U -->|Use app| FE
+
+  %% ===== API Layer =====
+  APIGW[API Gateway\nHTTP API]
+  FE -->|POST /upload\nGET /results\nGET/DELETE /results/{id}| APIGW
+
+  %% ===== Upload Path =====
+  UL[Upload Lambda]
+  S3[(S3 Documents Bucket)]
+  APIGW -->|invoke| UL
+  UL -->|Return presigned URL| FE
+  FE -->|PUT file (pdf/txt)| S3
+
+  %% ===== Event-Driven Pipeline =====
+  SQSE[(SQS Extract Queue)]
+  EL[Extract Lambda]
+  SQSP[(SQS Process Queue)]
+  PL[Process Lambda]
+  SQSA[(SQS Analysis Queue)]
+  AL[Analysis Lambda]
+  SQSS[(SQS Storage Queue)]
+  SL[Storage Lambda]
+
+  S3 -->|Object-created event| SQSE
+  SQSE -->|message| EL
+  EL -->|extracted_text| SQSP
+  SQSP -->|message| PL
+  PL -->|normalized payload| SQSA
+  SQSA -->|message| AL
+  AL -->|summary + tags| SQSS
+  SQSS -->|message| SL
+
+  %% ===== Data Stores =====
+  DDB[(DynamoDB Results Table\nMain rows + tag-index rows)]
+  SL -->|write result + tag index| DDB
+
+  %% ===== Query + Cache + Delete =====
+  QL[Query Lambda]
+  CACHE[(In-memory Cache\ncache-aside for detail)]
+  APIGW -->|invoke| QL
+  QL <-->|read/list/detail/delete metadata| DDB
+  QL <-->|GET /results/{id}| CACHE
+  QL -->|DELETE object| S3
+
+  %% ===== Observability =====
+  CW[(CloudWatch Logs)]
+  UL -. logs .-> CW
+  EL -. logs .-> CW
+  PL -. logs .-> CW
+  AL -. logs .-> CW
+  SL -. logs .-> CW
+  QL -. logs .-> CW
+```

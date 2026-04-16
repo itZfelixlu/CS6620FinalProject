@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Document Intelligence</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div>
+        <h1>Document Intelligence</h1>
+        <p class="subtitle">Upload documents and browse analysis results</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main">
+    <section class="card card--setup">
+      <h2>API connection</h2>
+      <p class="hint">When hosted on AWS, <code>config.json</code> sets the API URL automatically. For local testing, paste the URL here or use <code>?api=...</code>; your choice is saved in this browser.</p>
+      <div class="row">
+        <label for="api-url-input">Base URL</label>
+        <input id="api-url-input" class="input-grow" type="text" placeholder="https://xxxx.execute-api.region.amazonaws.com">
+        <button id="save-api-btn" type="button" class="btn-secondary">Save</button>
+      </div>
+      <p id="api-output" class="status-line" role="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>Upload</h2>
+      <p class="hint">PDF or plain text (.txt) only. You can select multiple files or drag and drop.</p>
+      <div id="drop-zone" class="drop-zone" tabindex="0" role="button">
+        Drag and drop files here
+      </div>
+      <form id="upload-form" class="upload-row" novalidate>
+        <input id="file-input" type="file" multiple accept=".pdf,.txt,application/pdf,text/plain">
+        <button type="submit">Upload selected files</button>
+      </form>
+      <p id="upload-selection" class="list-meta"></p>
+      <div id="upload-progress" class="upload-progress" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="upload-progress-text">Uploading...</span>
+      </div>
+      <div id="upload-message" class="message-panel" hidden></div>
+    </section>
+
+    <section class="card">
+      <h2>Your documents</h2>
+      <p class="hint">Includes all completed analyses still in the database (including older uploads).</p>
+      <div class="row">
+        <label for="tag-input">Filter by tag</label>
+        <input id="tag-input" type="text" placeholder="optional, e.g. cloud">
+        <button id="list-btn" type="button">Refresh list</button>
+        <button id="delete-selected-btn" type="button" class="btn-danger" disabled>Delete selected (0)</button>
+      </div>
+      <p id="list-meta" class="list-meta"></p>
+      <div id="results-grid" class="results-grid"></div>
+      <p id="list-error" class="error-text"></p>
+    </section>
+
+    <section class="card">
+      <h2>Document detail</h2>
+      <div class="row">
+        <label for="doc-id-input">Document ID</label>
+        <input id="doc-id-input" class="input-grow" type="text" placeholder="UUID from list or after upload">
+        <button id="detail-btn" type="button">Load</button>
+      </div>
+      <p id="cache-indicator" class="cache" aria-live="polite"></p>
+      <div id="detail-panel" class="detail-panel" hidden></div>
+      <details id="detail-raw-wrap" class="raw-wrap" hidden>
+        <summary>Technical details (JSON)</summary>
+        <pre id="detail-raw" class="output"></pre>
+      </details>
+      <p id="detail-error" class="error-text"></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>CS6620 — AWS Document Intelligence</p>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

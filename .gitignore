@@ -8,3 +8,9 @@ __pycache__
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# Local override for API URL (CDK deploy generates this in the bucket)
+frontend/config.json
+
+# Copied from config/keyword_tags.json at synth/test time
+lambda/analysis/keyword_tags.json
