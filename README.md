@@ -61,55 +61,46 @@ Enjoy!
 
 ```mermaid
 flowchart LR
-  %% ===== Clients =====
   U[User]
-  FE[Frontend Web App<br/>(S3 Static Website)]
-  U -->|Use app| FE
-
-  %% ===== API Layer =====
-  APIGW[API Gateway<br/>HTTP API]
-  FE -->|POST /upload<br/>GET /results<br/>GET/DELETE /results/{id}| APIGW
-
-  %% ===== Upload Path =====
+  FE[Frontend Web App]
+  APIGW[API Gateway HTTP API]
   UL[Upload Lambda]
-  S3[(S3 Documents Bucket)]
-  APIGW -->|invoke| UL
-  UL -->|Return presigned URL| FE
-  FE -->|PUT file (pdf/txt)| S3
-
-  %% ===== Event-Driven Pipeline =====
-  SQSE[(SQS Extract Queue)]
-  EL[Extract Lambda]
-  SQSP[(SQS Process Queue)]
-  PL[Process Lambda]
-  SQSA[(SQS Analysis Queue)]
-  AL[Analysis Lambda]
-  SQSS[(SQS Storage Queue)]
-  SL[Storage Lambda]
-
-  S3 -->|Object-created event| SQSE
-  SQSE -->|message| EL
-  EL -->|extracted_text| SQSP
-  SQSP -->|message| PL
-  PL -->|normalized payload| SQSA
-  SQSA -->|message| AL
-  AL -->|summary + tags| SQSS
-  SQSS -->|message| SL
-
-  %% ===== Data Stores =====
-  DDB[(DynamoDB Results Table<br/>Main rows + tag-index rows)]
-  SL -->|write result + tag index| DDB
-
-  %% ===== Query + Cache + Delete =====
   QL[Query Lambda]
-  CACHE[(In-memory Cache<br/>cache-aside for detail)]
-  APIGW -->|invoke| QL
-  QL <-->|read/list/detail/delete metadata| DDB
-  QL <-->|GET /results/{id}| CACHE
-  QL -->|DELETE object| S3
-
-  %% ===== Observability =====
+  S3[(S3 Documents Bucket)]
+  DDB[(DynamoDB Results Table)]
+  CACHE[(In-memory Cache)]
+  SQSE[SQS Extract Queue]
+  EL[Extract Lambda]
+  SQSP[SQS Process Queue]
+  PL[Process Lambda]
+  SQSA[SQS Analysis Queue]
+  AL[Analysis Lambda]
+  SQSS[SQS Storage Queue]
+  SL[Storage Lambda]
   CW[(CloudWatch Logs)]
+
+  U --> FE
+  FE -->|POST /upload| APIGW
+  FE -->|GET /results and GET/DELETE /results/{id}| APIGW
+  APIGW --> UL
+  UL -->|Presigned URL| FE
+  FE -->|PUT file| S3
+
+  S3 -->|Object created event| SQSE
+  SQSE --> EL
+  EL --> SQSP
+  SQSP --> PL
+  PL --> SQSA
+  SQSA --> AL
+  AL --> SQSS
+  SQSS --> SL
+  SL -->|Write result and tag index| DDB
+
+  APIGW --> QL
+  QL -->|List/detail read and metadata delete| DDB
+  QL -->|Cache-aside detail lookup| CACHE
+  QL -->|Delete object| S3
+
   UL -. logs .-> CW
   EL -. logs .-> CW
   PL -. logs .-> CW
