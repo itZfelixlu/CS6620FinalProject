@@ -63,12 +63,12 @@ Enjoy!
 flowchart LR
   %% ===== Clients =====
   U[User]
-  FE[Frontend Web App\n(S3 Static Website)]
+  FE[Frontend Web App<br/>(S3 Static Website)]
   U -->|Use app| FE
 
   %% ===== API Layer =====
-  APIGW[API Gateway\nHTTP API]
-  FE -->|POST /upload\nGET /results\nGET/DELETE /results/{id}| APIGW
+  APIGW[API Gateway<br/>HTTP API]
+  FE -->|POST /upload<br/>GET /results<br/>GET/DELETE /results/{id}| APIGW
 
   %% ===== Upload Path =====
   UL[Upload Lambda]
@@ -97,12 +97,12 @@ flowchart LR
   SQSS -->|message| SL
 
   %% ===== Data Stores =====
-  DDB[(DynamoDB Results Table\nMain rows + tag-index rows)]
+  DDB[(DynamoDB Results Table<br/>Main rows + tag-index rows)]
   SL -->|write result + tag index| DDB
 
   %% ===== Query + Cache + Delete =====
   QL[Query Lambda]
-  CACHE[(In-memory Cache\ncache-aside for detail)]
+  CACHE[(In-memory Cache<br/>cache-aside for detail)]
   APIGW -->|invoke| QL
   QL <-->|read/list/detail/delete metadata| DDB
   QL <-->|GET /results/{id}| CACHE
