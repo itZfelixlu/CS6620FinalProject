@@ -69,15 +69,19 @@ flowchart LR
   S3[(S3 Documents Bucket)]
   DDB[(DynamoDB Results Table)]
   CACHE[(In-memory Cache)]
-  SQSE[SQS Extract Queue]
   EL[Extract Lambda]
-  SQSP[SQS Process Queue]
   PL[Process Lambda]
-  SQSA[SQS Analysis Queue]
   AL[Analysis Lambda]
-  SQSS[SQS Storage Queue]
   SL[Storage Lambda]
   CW[(CloudWatch Logs)]
+
+  subgraph SQS["SQS Queues"]
+    direction TB
+    SQSE[SQS Extract Queue]
+    SQSP[SQS Process Queue]
+    SQSA[SQS Analysis Queue]
+    SQSS[SQS Storage Queue]
+  end
 
   U --> FE
   FE -->|POST /upload| APIGW
