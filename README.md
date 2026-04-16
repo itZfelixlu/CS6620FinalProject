@@ -63,34 +63,32 @@ Enjoy!
 flowchart LR
   U[User]
   FE[Frontend Web App]
-  APIGW[API Gateway HTTP API]
+  APIGW[API Gateway]
   UL[Upload Lambda]
   QL[Query Lambda]
-  S3[(S3 Documents Bucket)]
-  DDB[(DynamoDB Results Table)]
-  CACHE[(In-memory Cache)]
+  S3[(S3 Bucket)]
+  DDB[(DynamoDB)]
+  CACHE[(Cache)]
   EL[Extract Lambda]
   PL[Process Lambda]
   AL[Analysis Lambda]
   SL[Storage Lambda]
-  CW[(CloudWatch Logs)]
 
   subgraph SQS["SQS Queues"]
     direction TB
-    SQSE[SQS Extract Queue]
-    SQSP[SQS Process Queue]
-    SQSA[SQS Analysis Queue]
-    SQSS[SQS Storage Queue]
+    SQSE[Extract Queue]
+    SQSP[Process Queue]
+    SQSA[Analysis Queue]
+    SQSS[Storage Queue]
   end
 
   U --> FE
-  FE -->|POST /upload| APIGW
-  FE -->|GET /results and GET or DELETE result by id| APIGW
+  FE --> APIGW
   APIGW --> UL
-  UL -->|Presigned URL| FE
-  FE -->|PUT file| S3
+  UL --> FE
+  FE --> S3
 
-  S3 -->|Object created event| SQSE
+  S3 --> SQSE
   SQSE --> EL
   EL --> SQSP
   SQSP --> PL
@@ -98,17 +96,10 @@ flowchart LR
   SQSA --> AL
   AL --> SQSS
   SQSS --> SL
-  SL -->|Write result and tag index| DDB
+  SL --> DDB
 
   APIGW --> QL
-  QL -->|List/detail read and metadata delete| DDB
-  QL -->|Cache-aside detail lookup| CACHE
-  QL -->|Delete object| S3
-
-  UL -. logs .-> CW
-  EL -. logs .-> CW
-  PL -. logs .-> CW
-  AL -. logs .-> CW
-  SL -. logs .-> CW
-  QL -. logs .-> CW
+  QL --> DDB
+  QL --> CACHE
+  QL --> S3
 ```
