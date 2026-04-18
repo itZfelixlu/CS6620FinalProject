@@ -4,7 +4,7 @@
 Uploads use **two hops**: the browser calls **API Gateway → Upload Lambda** only to get a **presigned URL**; the **file bytes never pass through** Upload Lambda or Query Lambda. The browser then **PUTs directly to S3**. Query Lambda is for **listing / detail / delete**, not for the presigned upload step.
 
 ```mermaid
-%%{init: {"flowchart": {"nodeSpacing": 18, "rankSpacing": 18, "curve": "basis"}, "themeVariables": {"fontSize": "12px"}} }%%
+%%{init: {"theme":"base","flowchart": {"nodeSpacing": 18, "rankSpacing": 18, "curve": "linear"}, "themeVariables": {"fontSize": "13px", "edgeLabelBackground":"#ffffff", "primaryTextColor":"#111111", "lineColor":"#555555"}} }%%
 flowchart TB
   U[User]
   FE[Frontend Web App]
