@@ -1,36 +1,55 @@
 
 ## Architecture Diagram
 
+Uploads use **two hops**: the browser calls **API Gateway → Upload Lambda** only to get a **presigned URL**; the **file bytes never pass through** Upload Lambda or Query Lambda. The browser then **PUTs directly to S3**. Query Lambda is for **listing / detail / delete**, not for the presigned upload step.
+
 ```mermaid
-flowchart LR
+flowchart TB
   U[User]
   FE[Frontend Web App]
   APIGW[API Gateway]
   UL[Upload Lambda]
   QL[Query Lambda]
-  S3[(S3 Bucket)]
+  CACHE[(In-memory cache)]
+  S3[(S3 documents bucket)]
   DDB[(DynamoDB)]
-  CACHE[(Cache)]
-  EL[Extract Lambda]
-  PL[Process Lambda]
-  AL[Analysis Lambda]
-  SL[Storage Lambda]
+  EB[EventBridge]
 
-  subgraph SQS["SQS Queues"]
+  subgraph Pipeline["Async pipeline Lambdas"]
+    EL[Extract Lambda]
+    PL[Process Lambda]
+    AL[Analysis Lambda]
+    SL[Storage Lambda]
+  end
+
+  subgraph SQS["SQS queues plus DLQs"]
     direction TB
-    SQSE[Extract Queue]
-    SQSP[Process Queue]
-    SQSA[Analysis Queue]
-    SQSS[Storage Queue]
+    SQSE[Extract queue]
+    SQSP[Process queue]
+    SQSA[Analysis queue]
+    SQSS[Storage queue]
   end
 
   U --> FE
-  FE --> APIGW
-  APIGW --> UL
-  UL --> FE
-  FE --> S3
 
-  S3 --> SQSE
+  subgraph UploadPath["Presign path metadata only"]
+    FE -->|POST /upload| APIGW
+    APIGW --> UL
+    UL -->|JSON presigned URL| FE
+  end
+
+  FE -->|PUT file bytes| S3
+
+  subgraph ReadPath["Read and delete path"]
+    FE -->|GET or DELETE /results| APIGW
+    APIGW --> QL
+    QL --> DDB
+    QL --> CACHE
+    QL -.->|DELETE removes S3 object| S3
+  end
+
+  S3 -.->|Object Created rule| EB
+  EB --> SQSE
   SQSE --> EL
   EL --> SQSP
   SQSP --> PL
@@ -39,9 +58,4 @@ flowchart LR
   AL --> SQSS
   SQSS --> SL
   SL --> DDB
-
-  APIGW --> QL
-  QL --> DDB
-  QL --> CACHE
-  QL --> S3
 ```

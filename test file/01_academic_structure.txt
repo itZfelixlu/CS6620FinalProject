@@ -1,0 +1,27 @@
+Sample note for tag testing — academic structure
+
+This short document is written to exercise several phrases from the project keyword list.
+
+ABSTRACT
+We study document routing through a mock pipeline. Keywords appear in plain text so the analysis stage can surface them.
+
+INTRODUCTION
+This introduction explains why substring matching matters. We reference common section names used in research writing.
+
+LITERATURE REVIEW
+Prior work on executive summaries and background sections informs our layout. Objectives are stated explicitly for clarity.
+
+METHODOLOGY
+Our methodology section lists methods comparable to a methods block in a paper. We describe a simple experiment design with a clear hypothesis.
+
+RESULTS
+Results are summarized without figures here; a statistical tone is used for demonstration.
+
+DISCUSSION AND CONCLUSION
+The discussion ties findings to recommendations. The conclusion restates the narrative arc.
+
+REFERENCES
+A citation example and DOI placeholder help match bibliography-related tags. Peer review, journal, and conference keywords appear in this sentence for testing.
+
+APPENDIX
+Appendix material may include an extra dataset reference and an abbreviated figure caption mention.

@@ -1,0 +1,13 @@
+Methods and experiment-focused sample
+
+METHODOLOGY
+This section describes our methodology in plain language. We align wording with methods blocks found in papers.
+
+HYPOTHESIS
+We state a simple hypothesis before running the experiment.
+
+EXPERIMENT
+The experiment section references a dataset and statistical checks. We might cite a figure or an appendix for extra detail.
+
+DISCUSSION
+The discussion links back to results and executive summary style takeaways.

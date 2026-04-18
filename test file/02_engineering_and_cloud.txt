@@ -1,0 +1,7 @@
+Engineering-focused smoke test
+
+This file targets technical keywords used by the analyzer.
+
+Topics covered: machine learning, neural network models, and simulation of workloads. We mention electrical engineering signals and software engineering practices together.
+
+For cloud computing we describe a batch job that runs data analysis on uploaded objects. The text is plain ASCII so extraction stays predictable.

@@ -1,0 +1,9 @@
+Publication-style metadata blob
+
+doi:10.1234/example.qa.meta
+Peer review status: illustrative only.
+We mention a journal article and a conference presentation in one line for matching.
+
+Citation: Example, A. (2025). Title of Paper. Figure 1 would illustrate the idea; statistical tables might follow.
+
+Executive summary: one paragraph standing in for a short brief. Background context appears here too.

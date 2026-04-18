@@ -18,6 +18,7 @@ const uploadProgressText = document.getElementById("upload-progress-text");
 
 const tagInput = document.getElementById("tag-input");
 const listBtn = document.getElementById("list-btn");
+const selectAllBtn = document.getElementById("select-all-btn");
 const deleteSelectedBtn = document.getElementById("delete-selected-btn");
 const resultsGrid = document.getElementById("results-grid");
 const listMeta = document.getElementById("list-meta");
@@ -195,6 +196,44 @@ function updateBatchDeleteButton() {
   const count = selectedDocumentIds.size;
   deleteSelectedBtn.textContent = `Delete selected (${count})`;
   deleteSelectedBtn.disabled = count === 0;
+}
+
+function updateSelectAllButtonState() {
+  const boxes = resultsGrid.querySelectorAll(".card-select");
+  if (boxes.length === 0) {
+    selectAllBtn.disabled = true;
+    return;
+  }
+  selectAllBtn.disabled = false;
+  let allChecked = true;
+  for (const box of boxes) {
+    if (!box.checked) {
+      allChecked = false;
+      break;
+    }
+  }
+  selectAllBtn.textContent = allChecked ? "Deselect all" : "Select all";
+}
+
+function selectAllVisibleCards() {
+  const boxes = resultsGrid.querySelectorAll(".card-select");
+  if (boxes.length === 0) return;
+  const allSelected = Array.from(boxes).every((b) => b.checked);
+  if (allSelected) {
+    for (const box of boxes) {
+      box.checked = false;
+      const sid = box.getAttribute("data-select-id") || "";
+      if (sid) selectedDocumentIds.delete(sid);
+    }
+  } else {
+    for (const box of boxes) {
+      box.checked = true;
+      const sid = box.getAttribute("data-select-id") || "";
+      if (sid) selectedDocumentIds.add(sid);
+    }
+  }
+  updateBatchDeleteButton();
+  updateSelectAllButtonState();
 }
 
 function showUploadMessage(html, isError) {
@@ -415,6 +454,7 @@ function renderResultCards(items) {
         if (selectBox.checked) selectedDocumentIds.add(sid);
         else selectedDocumentIds.delete(sid);
         updateBatchDeleteButton();
+        updateSelectAllButtonState();
       });
     }
     const deleteBtn = card.querySelector(".btn-danger");
@@ -440,10 +480,13 @@ function renderResultCards(items) {
     }
     resultsGrid.appendChild(card);
   }
+  updateSelectAllButtonState();
 }
 
 listBtn.addEventListener("click", async () => {
   resultsGrid.innerHTML = "";
+  selectAllBtn.disabled = true;
+  selectAllBtn.textContent = "Select all";
   listMeta.textContent = "";
   listError.textContent = "";
   try {
@@ -459,6 +502,8 @@ listBtn.addEventListener("click", async () => {
       } else {
         listMeta.textContent = "No documents match this filter.";
       }
+      selectAllBtn.disabled = true;
+      selectAllBtn.textContent = "Select all";
       return;
     }
 
@@ -471,6 +516,10 @@ listBtn.addEventListener("click", async () => {
   } catch (err) {
     listError.textContent = String(err.message || err);
   }
+});
+
+selectAllBtn.addEventListener("click", () => {
+  selectAllVisibleCards();
 });
 
 deleteSelectedBtn.addEventListener("click", async () => {
