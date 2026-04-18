@@ -3,6 +3,8 @@
 
 Uploads use **two hops**: the browser calls **API Gateway → Upload Lambda** only to get a **presigned URL**; the **file bytes never pass through** Upload Lambda or Query Lambda. The browser then **PUTs directly to S3**. Query Lambda is for **listing / detail / delete**, not for the presigned upload step.
 
+**Presign path:** `POST /upload` → presigned URL → `PUT` to S3. **Read/delete path:** `GET` / `DELETE /results` → Query Lambda → DynamoDB (and cache; `DELETE` also removes the S3 object).
+
 ```mermaid
 %%{init: {"theme":"base","flowchart": {"nodeSpacing": 18, "rankSpacing": 18, "curve": "linear"}, "themeVariables": {"fontSize": "13px", "edgeLabelBackground":"#ffffff", "primaryTextColor":"#111111", "lineColor":"#555555"}} }%%
 flowchart TB
@@ -32,22 +34,15 @@ flowchart TB
   end
 
   U --> FE
-
-  subgraph UploadPath["Presign path metadata only"]
-    FE -->|POST /upload| APIGW
-    APIGW --> UL
-    UL -->|JSON presigned URL| FE
-  end
-
+  FE -->|POST /upload| APIGW
+  APIGW --> UL
+  UL -->|presigned URL| FE
   FE -->|PUT file bytes| S3
-
-  subgraph ReadPath["Read and delete path"]
-    FE -->|GET or DELETE /results| APIGW
-    APIGW --> QL
-    QL --> DDB
-    QL --> CACHE
-    QL -.->|DELETE removes S3 object| S3
-  end
+  FE -->|GET or DELETE /results| APIGW
+  APIGW --> QL
+  QL --> DDB
+  QL --> CACHE
+  QL -.->|DELETE removes S3 object| S3
 
   S3 -.->|Object Created rule| EB
   EB --> SQSE
