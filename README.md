@@ -3,6 +3,7 @@
 
 Uploads use **two hops**: the browser calls **API Gateway → Upload Lambda** only to get a **presigned URL**; the **file bytes never pass through** Upload Lambda or Query Lambda. The browser then **PUTs directly to S3**. Query Lambda is for **listing / detail / delete**, not for the presigned upload step.
 
+
 ```mermaid
 %%{init: {"theme":"base","flowchart": {"nodeSpacing": 18, "rankSpacing": 18, "curve": "linear"}, "themeVariables": {"fontSize": "13px", "edgeLabelBackground":"#ffffff", "primaryTextColor":"#111111", "lineColor":"#555555"}} }%%
 flowchart TB
@@ -16,14 +17,14 @@ flowchart TB
   DDB[(DynamoDB)]
   EB[EventBridge]
 
-  subgraph Pipeline["Async pipeline Lambdas"]
+  subgraph Pipeline[" "]
     EL[Extract Lambda]
     PL[Process Lambda]
     AL[Analysis Lambda]
     SL[Storage Lambda]
   end
 
-  subgraph SQS["SQS queues plus DLQs"]
+  subgraph SQS[" "]
     direction TB
     SQSE[Extract queue]
     SQSP[Process queue]
@@ -34,9 +35,6 @@ flowchart TB
   U --> FE
 
   subgraph UploadPath[" "]
-    direction TB
-    cap_up[Presign path · metadata only]
-    style cap_up fill:#f0f4f8,stroke:#ccd6e0,color:#222
     FE -->|POST /upload| APIGW
     APIGW --> UL
     UL -->|JSON presigned URL| FE
@@ -45,9 +43,6 @@ flowchart TB
   FE -->|PUT file bytes| S3
 
   subgraph ReadPath[" "]
-    direction TB
-    cap_rd[Read and delete path]
-    style cap_rd fill:#f0f4f8,stroke:#ccd6e0,color:#222
     FE -->|GET or DELETE /results| APIGW
     APIGW --> QL
     QL --> DDB
